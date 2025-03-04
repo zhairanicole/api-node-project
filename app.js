@@ -6,7 +6,7 @@ const app = express();
 
 // Handling GET request
 app.get('/', (req, res) => { 
-    res.send('A simple Node App is '
+    res.send('A sample Node App is '
         + 'running on this server') 
     res.end() 
 }) 
