@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const connectDB = require("./config/db");
+const connectDB = require("./connectionHelper/db");
 const customerRoutes = require("./routes/customerRoutes");
 
 dotenv.config();
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use("/api/customers", customerRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the Customer API!");
+  res.send("Hello World!");
 });
 
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
