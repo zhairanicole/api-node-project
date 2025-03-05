@@ -1,8 +1,8 @@
-const Customer = require("../models/customerModel");
+const Customer = require("../domain/customerModel");
 
 // @desc    Get all customers
 // @route   GET /api/customers
-const getCustomers = async (req, res) => {
+const getAllCustomer = async (req, res) => {
     try {
         const customers = await Customer.find();
         res.json(customers);    
@@ -23,9 +23,9 @@ const getCustomerById = async (req, res) => {
     }
 };
 
-//@desc     Create a new customer
+//@desc     Add a new customer
 //@route    POST /api/customers
-const createCustomer = async (req, res) => {
+const addCustomer = async (req, res) => {
     try {
         const { name, email, phone } = req.body;
         const newCustomer = new Customer({ name, email, phone });
@@ -60,4 +60,4 @@ const deleteCustomer = async (req, res) => {
     }
 };
 
-module.exports = { getCustomers, getCustomerById, createCustomer, updateCustomer, deleteCustomer };
+module.exports = { getAllCustomer, getCustomerById, addCustomer, updateCustomer, deleteCustomer };
