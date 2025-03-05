@@ -1,21 +1,21 @@
-const Customer = require("../domain/customerModel");
+const customerService = require("../service/customerService");
 
 // @desc    Get all customers
 // @route   GET /api/customers
 const getAllCustomer = async (req, res) => {
     try {
-        const customers = await Customer.find();
-        res.json(customers);    
+        const customers = await customerService.getAllCustomers();
+        res.json(customers);
     } catch (error) {
         res.status(500).json({ message: "Error fetching customers", error });
     }
 };
 
 // @desc    Get a single customer by ID
-// @route   Get /api/customers/:id
+// @route   GET /api/customers/:id
 const getCustomerById = async (req, res) => {
     try {
-        const customer = await Customer.findById(req.params.id);
+        const customer = await customerService.getCustomerById(req.params.id);
         if (!customer) return res.status(404).json({ message: "Customer not found" });
         res.json(customer);
     } catch (error) {
@@ -23,16 +23,29 @@ const getCustomerById = async (req, res) => {
     }
 };
 
-//@desc     Add a new customer
-//@route    POST /api/customers
+// @desc    Add a new customer
+// @route   POST /api/customers
 const addCustomer = async (req, res) => {
     try {
-        const { name, email, phone } = req.body;
-        const newCustomer = new Customer({ name, email, phone });
-        await newCustomer.save();
+        const newCustomer = await customerService.addCustomer(req.body);
         res.status(201).json({ message: "Customer added successfully", customer: newCustomer });
     } catch (error) {
         res.status(500).json({ message: "Error adding customer", error });
+    }
+};
+
+// @desc    Add multiple customers
+// @route   POST /api/customers/list
+const addAllCustomer = async (req, res) => {
+    try {
+        if (!Array.isArray(req.body)) {
+            return res.status(400).json({ message: "Invalid input, expected an array of objects." });
+        }
+
+        const addedCustomers = await customerService.addAllCustomers(req.body);
+        res.status(201).json({ message: "Customers added successfully!", customers: addedCustomers });
+    } catch (error) {
+        res.status(500).json({ message: "Error adding customers", error });
     }
 };
 
@@ -40,9 +53,9 @@ const addCustomer = async (req, res) => {
 // @route   PUT /api/customers/:id
 const updateCustomer = async (req, res) => {
     try {
-        const updatedCustomer = await Customer.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedCustomer = await customerService.updateCustomer(req.params.id, req.body);
         if (!updatedCustomer) return res.status(404).json({ message: "Customer not found" });
-        res.json({ message: "Customer updated successfully", customer: updateCustomer });
+        res.json({ message: "Customer updated successfully", customer: updatedCustomer });
     } catch (error) {
         res.status(500).json({ message: "Error updating customer", error });
     }
@@ -52,7 +65,7 @@ const updateCustomer = async (req, res) => {
 // @route   DELETE /api/customers/:id
 const deleteCustomer = async (req, res) => {
     try {
-        const deletedCustomer = await Customer.findByIdAndDelete(req.params.id);
+        const deletedCustomer = await customerService.deleteCustomer(req.params.id);
         if (!deletedCustomer) return res.status(404).json({ message: "Customer not found" });
         res.json({ message: "Customer deleted successfully" });
     } catch (error) {
@@ -60,4 +73,11 @@ const deleteCustomer = async (req, res) => {
     }
 };
 
-module.exports = { getAllCustomer, getCustomerById, addCustomer, updateCustomer, deleteCustomer };
+module.exports = { 
+    getAllCustomer, 
+    getCustomerById, 
+    addCustomer, 
+    addAllCustomer, 
+    updateCustomer, 
+    deleteCustomer 
+};
